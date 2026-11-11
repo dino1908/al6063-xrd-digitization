@@ -89,3 +89,4 @@ def reconstruct_st(tiff_path: str | Path, version: int) -> np.ndarray:
     intensity = (y0 - y) * 3500.0 / (y0 - y3500)
     recovered = np.interp(ANGLES, angle, intensity)
     return np.maximum(0, recovered) if version == 4 else recovered
+

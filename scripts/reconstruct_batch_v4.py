@@ -1,16 +1,4 @@
-"""Project A | V4 batch digitization of the five original Al6063 XRD TIFF graphs.
-
-Run from the project folder (containing XRD_*.tif):
-    python ProjectA_XRD_TIFF_batch_digitizer_v4.py
-
-Notebook: %run ProjectA_XRD_TIFF_batch_digitizer_v4.py
-
-Dependencies: numpy, pillow, scipy, scikit-image, matplotlib.
-
-Important: calibrated ONLY for the plotting style and the five measured axes below.
-Other templates and scales must be calibrated explicitly. TIFF-derived values are
-estimates, not original detector measurements.
-"""
+"""Digitize the five calibrated Al6063 diffraction plots."""
 from pathlib import Path
 import csv
 import re
@@ -18,13 +6,14 @@ import numpy as np
 from PIL import Image
 from scipy.signal import find_peaks
 from skimage.morphology import skeletonize
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# EDIT THIS if your TIFFs are not next to this script/notebook.
-INPUT_DIR = Path(__file__).resolve().parents[1] / "data" / "raw" / "tiff"
-OUTPUT_DIR = Path(__file__).resolve().parents[1] / "results" / "batch_v4"
-STEP_DEGREES = 0.05  # Output interpolation grid, NOT a claim about source acquisition step.
-MAKE_QA_PLOTS = True
+ROOT = Path(__file__).resolve().parents[1]
+INPUT_DIR = ROOT / "data" / "raw" / "tiff"
+OUTPUT_DIR = ROOT / "results" / "batch_v4"
+STEP_DEGREES = 0.05
 
 # Pixel calibrations verified from labels and tick marks in the five TIFFs.
 # Each entry is (pixel_y_at_zero, pixel_y_at_reference, reference_intensity).
@@ -134,21 +123,20 @@ def main():
                    np.column_stack([result["angle"], result["intensity"]]),
                    delimiter=",", header="angle_degrees,intensity_estimated",
                    comments="", fmt=["%.2f", "%.4f"])
-        if MAKE_QA_PLOTS:
-            # QA image: red trace should overlay the original ink accurately.
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.4))
-            gray = np.asarray(Image.open(path).convert("L"))
-            ax1.imshow(gray, cmap="gray", vmin=0, vmax=255)
-            ax1.plot(result["x_pixels"], result["y_pixels"], color="red", lw=0.75)
-            ax1.set(xlim=(730, 2790), ylim=(1930, 260), title="Red trace on original TIFF")
-            ax2.plot(result["angle"], result["intensity"], color="black", lw=0.85)
-            ax2.set(xlabel="2θ (degrees, inferred from graph)", ylabel="Estimated intensity",
-                    title="Reconstructed XRD curve")
-            ax2.grid(alpha=0.2)
-            fig.suptitle(path.name, fontsize=11)
-            fig.tight_layout()
-            fig.savefig(OUTPUT_DIR / f"{path.stem}_QA.png", dpi=150)
-            plt.close(fig)
+        # QA image: red trace should overlay the original ink accurately.
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.4))
+        gray = np.asarray(Image.open(path).convert("L"))
+        ax1.imshow(gray, cmap="gray", vmin=0, vmax=255)
+        ax1.plot(result["x_pixels"], result["y_pixels"], color="red", lw=0.75)
+        ax1.set(xlim=(730, 2790), ylim=(1930, 260), title="Red trace on original TIFF")
+        ax2.plot(result["angle"], result["intensity"], color="black", lw=0.85)
+        ax2.set(xlabel="2θ (degrees, inferred from graph)", ylabel="Estimated intensity",
+                title="Reconstructed XRD curve")
+        ax2.grid(alpha=0.2)
+        fig.suptitle(path.name, fontsize=11)
+        fig.tight_layout()
+        fig.savefig(OUTPUT_DIR / f"{path.stem}_QA.png", dpi=150)
+        plt.close(fig)
 
         low, high = result["visible_angle_range"]
         manifest.append({
@@ -163,7 +151,7 @@ def main():
             "y_zero_pixel": Y_CALIBRATION[name][0],
             "y_reference_pixel": Y_CALIBRATION[name][1],
             "y_reference_intensity": Y_CALIBRATION[name][2],
-            "status": "Digitized estimates; no raw-scan validation except ST"
+            "reference_available": name == "XRD_ST_2015"
         })
         print(f"OK {path.name} → {dest.name} | {len(result['angle'])} points "
               f"| {low:.2f}–{high:.2f}° visible | trace {result['coverage']:.1%}")
@@ -171,7 +159,8 @@ def main():
     if manifest:
         with (OUTPUT_DIR / "QA_summary.csv").open("w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=manifest[0].keys())
-            writer.writeheader(); writer.writerows(manifest)
+            writer.writeheader()
+            writer.writerows(manifest)
     print(f"\nFinished: {len(manifest)} TIFF(s) exported to {OUTPUT_DIR}")
 
 
