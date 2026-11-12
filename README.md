@@ -12,6 +12,10 @@ This repository reconstructs numerical XRD profiles from five archived Al6063 TI
 
 ---
 
+## Abstract
+
+Five archived Al6063 X-ray diffraction (XRD) plots were digitized to recover numerical intensity versus 2θ profiles. The reconstructed solution-treated (ST) scan reproduced the lattice parameters calculated from the original numerical scan within 0.0047% across three methods. A batch notebook automates peak fitting and lattice-parameter calculation for multiple XRD profiles and consolidates the estimates in one table.
+
 ## Reconstruction study
 
 ### 1. Problem statement and objective
@@ -114,6 +118,12 @@ Notable differences in relative peak intensities are visible between the rolled 
 Peak broadening may also contain information about crystallite size and lattice microstrain. Quantitative interpretation, however, would require suitable peak-profile fitting, instrumental broadening corrections and uncertainty assessment.
 
 **The principal outcome is a validated image-to-numerical reconstruction workflow**, with quantitative accuracy established for ST and image-level quality checks for the remaining four samples. The resulting datasets are suitable for exploratory diffraction analysis, subject to the limitations of recovering measurements from plotted images.
+
+### 7. Lattice-parameter validation and batch analysis
+
+The [batch notebook](06_lattice_parameter_notebook/Lattice_parameter_construction_bulk.ipynb) reads the shared Cu Kα₁ wavelength of **1.5406 Å** and the doublet settings once from the ST TXT header. It fits the (200), (220) and (311) FCC reflections in each V4 CSV, including ST, and calculates the lattice parameter using Bragg's law followed by an arithmetic mean, Nelson–Riley extrapolation and a Cohen-style least-squares fit with a Nelson–Riley correction term. The notebook can process multiple XRD CSV files with the same instrument settings in one run and exports one table for all samples and methods.
+
+In a separate benchmark, the same fits and calculations were applied to the original ST scan. The V4 estimates differed from the original by **0.000024–0.000187 Å** in absolute terms. This measures reconstruction accuracy for ST, the only sample with an original numerical scan. The [consolidated results](07_lattice_parameter_results/README.md) report all five samples and the ST comparison.
 
 ---
 
