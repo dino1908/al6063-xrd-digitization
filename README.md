@@ -14,7 +14,7 @@ This repository reconstructs numerical XRD profiles from five archived Al6063 TI
 
 ## Abstract
 
-Five archived Al6063 X-ray diffraction (XRD) plots were digitized to recover numerical intensity versus 2θ profiles. The reconstructed solution-treated (ST) scan reproduced the lattice parameters calculated from the original numerical scan within 0.0047% across three methods. A batch notebook automates peak fitting and lattice-parameter calculation for multiple XRD profiles and consolidates the estimates in one table.
+Archived X-ray diffraction (XRD) plots can be digitized to recover numerical intensity profiles. This study reconstructed five Al6063 scans from TIFF images and validated the solution-treated reconstruction by comparing lattice parameters with those calculated from the original scan. The estimates agreed within 0.0047% across three methods. A batch notebook automates all three calculations for multiple XRD scans and consolidates the results in a single table.
 
 ## Reconstruction study
 
@@ -121,9 +121,17 @@ Peak broadening may also contain information about crystallite size and lattice 
 
 ### 7. Lattice-parameter validation and batch analysis
 
-The [batch notebook](06_lattice_parameter_notebook/Lattice_parameter_construction_bulk.ipynb) reads the shared Cu Kα₁ wavelength of **1.5406 Å** and the doublet settings once from the ST TXT header. It fits the (200), (220) and (311) FCC reflections in each V4 CSV, including ST, and calculates the lattice parameter using Bragg's law followed by an arithmetic mean, Nelson–Riley extrapolation and a Cohen-style least-squares fit with a Nelson–Riley correction term. The notebook can process multiple XRD CSV files with the same instrument settings in one run and exports one table for all samples and methods.
+The [batch notebook](06_lattice_parameter_notebook/Lattice_parameter_construction_bulk.ipynb) reads the shared Cu Kα₁ wavelength (1.5406 Å) and doublet settings once from the original ST TXT header. For each reconstructed CSV, it fits the FCC (200), (220) and (311) reflections and uses Bragg’s law to estimate the lattice parameter by three methods. It processes multiple XRD files acquired with the same settings in one run and exports one table.
 
-In a separate benchmark, the same fits and calculations were applied to the original ST scan. The V4 estimates differed from the original by **0.000024–0.000187 Å** in absolute terms. This measures reconstruction accuracy for ST, the only sample with an original numerical scan. The [consolidated results](07_lattice_parameter_results/README.md) report all five samples and the ST comparison.
+| Sample | Arithmetic mean (Å) | Nelson–Riley (Å) | Cohen-style least squares with Nelson–Riley correction (Å) |
+|---|---:|---:|---:|
+| ST | 4.054361 | 4.053861 | 4.053963 |
+| CR40 | 4.052420 | 4.052331 | 4.052622 |
+| CR40 annealed | 4.053312 | 4.052320 | 4.052584 |
+| UDR85 | 4.051311 | 4.050562 | 4.051404 |
+| UDR85 annealed | 4.054511 | 4.053298 | 4.053074 |
+
+To validate the reconstruction, the original ST scan and its reconstructed profile were fitted separately using the same procedure. Their lattice-parameter estimates differed by **0.000024–0.000187 Å** (at most **0.0047%**). ST was the only sample with an original numerical scan available for this comparison. See the [validation results](07_lattice_parameter_results/README.md) for the method-by-method comparison.
 
 ---
 
