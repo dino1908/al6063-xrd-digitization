@@ -1,32 +1,27 @@
-# Al6063 XRD profile reconstruction from TIFF plots
+# Al6063 XRD TIFF digitization
 
-Five archived diffraction plots were digitized. The surviving Bruker export for the solution-treated (ST) specimen provides a numerical reference for four reconstruction methods. V4 reduced ST intensity RMSE from 48.884 to 9.244 counts and reproduced the grid locations of the three principal maxima. The other four profiles were checked against their TIFFs. Their measurement-level errors are unknown.
+This repository reconstructs numerical XRD profiles from five archived Al6063 TIFF plots. The solution-treated sample also has an original numerical TXT export, which is used to compare four experimental extraction methods.
 
-The [technical report](report/Al6063_XRD_Technical_Report.pdf) presents the validation results, peak measurements, and limitations.
+## Repository structure
 
-| Directory | Contents |
-|---|---|
-| `data/raw/` | Lossless archive of the original TIFF plots and the ST instrument export |
-| `src/` | Four historical ST extraction algorithms |
-| `scripts/` | Reconstruction, validation, sample comparison, and report generation |
-| `experiments/st_versions/` | Four ST reconstructions, pointwise residuals, and overlay plots |
-| `results/batch_v4/` | Five reconstructed CSVs and TIFF trace overlays |
-| `analysis/` | Validation tables, image QA, sample descriptors, and source hashes |
+- `01_original_data` contains the original TXT export and five TIFF plots.
+- `02_experiments` contains the code, reconstructed CSV, and validation outputs for V1, V2, V3, and V4.
+- `03_version_comparison` compares V1-V4 with the original TXT data and with each other.
+- `04_batch_v4_code` contains the V4 script scaled to process all five TIFF plots.
+- `05_batch_v4_outputs` contains the batch results copied from the archived Drive folder.
 
-## Reproduce the results
+## Run the project
 
-Run from the project directory with Python 3.
-
-```sh
-python3 -m venv .venv
-source .venv/bin/activate
+```bash
 python -m pip install -r requirements.txt
-python scripts/unpack_tiffs.py
-python scripts/reconstruct_st_versions.py
-python scripts/reconstruct_batch_v4.py
-python scripts/validate_and_analyze.py
-python scripts/compare_samples.py
-python scripts/build_report.py
+
+python 02_experiments/V1/run_v1.py
+python 02_experiments/V2/run_v2.py
+python 02_experiments/V3/run_v3.py
+python 02_experiments/V4/run_v4.py
+
+python 03_version_comparison/compare_versions.py
+python 04_batch_v4_code/reconstruct_all_tiffs_v4.py
 ```
 
-The digitizers read only the TIFFs. Validation reads the original ST export and compares it to the reconstructions on the same 938-point grid. Start with [scan-level metrics](analysis/st_validation_metrics.csv), [peak-level errors](analysis/st_peak_validation.csv), and [image QA outliers](analysis/image_qa_outliers.csv).
+The original TXT file is used for validation only. The reconstruction scripts use the TIFF plots as their data source.

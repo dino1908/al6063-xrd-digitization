@@ -1,7 +1,0 @@
-*.tif binary
-*.png binary
-*.txt text
-*.csv text
-*.py text
-*.md text
-*.zip binary

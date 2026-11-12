@@ -1,6 +1,0 @@
-filename,csv,data_points,angle_first,angle_last,max_intensity,trace_coverage_pct,tip_corrections,stroke_px,fraction_clipped_negative,y_zero_pixel,y_reference_pixel,y_reference_intensity,reference_available
-XRD_CR40_2015.tif,XRD_CR40_2015_reconstructed_v4.csv,1001,35.0,85.0,275.34,99.9,8,7.0,0.0,1862.0,398.0,300.0,False
-XRD_CR40_annealed_2015.tif,XRD_CR40_annealed_2015_reconstructed_v4.csv,1001,35.0,85.0,888.32,99.84,4,7.0,0.0,1828.0,276.0,1000.0,False
-XRD_ST_2015.tif,XRD_ST_2015_reconstructed_v4.csv,938,35.0,81.85,3065.1,99.83,3,4.0,0.0,1870.0,276.0,3500.0,True
-XRD_UDR85_2015.tif,XRD_UDR85_2015_reconstructed_v4.csv,1001,35.0,85.0,506.56,99.84,4,7.0,0.0,1852.0,276.0,600.0,False
-XRD_UDR85_annealed_2015.tif,XRD_UDR85_annealed_2015_reconstructed_v4.csv,1001,35.0,85.0,366.95,99.9,6,7.0,0.0,1804.0,366.0,400.0,False

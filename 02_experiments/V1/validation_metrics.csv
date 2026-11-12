@@ -1,0 +1,2 @@
+version,points,mae,rmse,correlation,r2,intensity_sum_error_pct
+V1,938,8.75760874,48.88392857,0.98926266,0.95678197,16.51867636
